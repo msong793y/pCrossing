@@ -137,8 +137,9 @@ button:disabled {
 
 #game-canvas{
     margin-top: 8%;
-    margin-left: 2%;
-    height: 500px;
-    width: 800px;
+    margin-left: 3%;
+    margin-right:3%;
+    height: 70vh;
+    width: 90vw;
     background-color: black;
 }
