@@ -1,0 +1,22 @@
+{
+  "name": "pcrossing",
+  "version": "1.0.0",
+  "description": "Browser game built with javascrpt and canvas",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/msong793y/pCrossing.git"
+  },
+  "author": "msong",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/msong793y/pCrossing/issues"
+  },
+  "homepage": "https://github.com/msong793y/pCrossing#readme",
+  "dependencies": {
+    "webpack": "^4.42.1"
+  }
+}
