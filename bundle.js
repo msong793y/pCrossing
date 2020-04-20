@@ -86,6 +86,60 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/banks.js":
+/*!**********************!*\
+  !*** ./src/banks.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Object = __webpack_require__(/*! ./object */ "./src/object.js")
+
+class Bank extends Object{
+
+    constructor(options){
+        
+        super(options)
+
+        this.radius =35;
+        this.vel = [0,0];
+        this.type = "bank";
+        this.speed=0;
+        this.color = "#FF0000";
+        // this.pos = options.pos;
+        this.game = options.game;
+        this.num=options.num;
+        
+        switch (options.num) {
+          case 1:
+            this.id = "Bank of America";
+            this.color = "#FF0000";
+            break;
+          case 2:
+            this.id = "Chase";
+            this.color = "#008000";
+            break;
+          case 3:
+            this.id = "Wells Frago";
+            this.color = "#FFFF00";
+            break;
+
+          default:
+            break;
+        }
+
+
+    }
+
+
+
+}
+
+
+module.exports =Bank
+
+/***/ }),
+
 /***/ "./src/game.js":
 /*!*********************!*\
   !*** ./src/game.js ***!
@@ -94,13 +148,18 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 const Util = __webpack_require__(/*! ./util */ "./src/util.js");
-const MovingObject = __webpack_require__(/*! ./moving_object */ "./src/moving_object.js");
+const Bank = __webpack_require__(/*! ./banks */ "./src/banks.js")
+const Object = __webpack_require__(/*! ./object */ "./src/object.js");
 
 class Game {
   constructor() {
     this.DIM_X = 1000;
     this.DIM_Y = 700;
     this.entities = [];
+    this.banks = [];
+    this.validBanks= new Set();
+    this.vendors = [];
+    this.validVendors = new Set();
     this.score = 0; // total score
     this.stage = 0; // current level
     this.setStage();
@@ -133,12 +192,25 @@ class Game {
 
   // setting for each level
   setStage() {
-    for (let i = 0; i < 10; i++) {
-      let pos = this.startingPosition();
-      let that = this;
-      this.entities.push(
-        new MovingObject({ pos: pos, vel: Util.randomVec(3), game: that })
-      );
+
+    let bankSet = new Set;
+    
+     for (let i = 1; i < 4; i++) {
+       let pos = [100, 100 * i];
+       let that = this;
+
+       this.entities.push(new Bank({ pos: pos, game: that, num: i }));
+     }
+    
+    if(this.stage === 0){
+
+        for (let i = 0; i < 10; i++) {
+        let pos = this.startingPosition();
+        let that = this;
+        this.entities.push(
+            new Object({ pos: pos, vel: Util.randomVec(3), game: that })
+        );
+        }
     }
   }
 
@@ -257,10 +329,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
 /***/ }),
 
-/***/ "./src/moving_object.js":
-/*!******************************!*\
-  !*** ./src/moving_object.js ***!
-  \******************************/
+/***/ "./src/object.js":
+/*!***********************!*\
+  !*** ./src/object.js ***!
+  \***********************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -269,8 +341,11 @@ const NORMAL_FRAME_TIME_DELTA = 1000 / 60;
 
 
 
-class MovingObject {
+class Object {
+  
   constructor(options) {
+    this.id = options.id || null;
+    this.type = options.type || null;
     this.pos = options.pos;
     this.vel = options.vel;
     this.radius = options.radius || 50;
@@ -309,7 +384,7 @@ class MovingObject {
 }
 
 
-module.exports = MovingObject;
+module.exports = Object;
 
 /***/ }),
 

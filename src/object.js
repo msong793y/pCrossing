@@ -3,8 +3,11 @@ const NORMAL_FRAME_TIME_DELTA = 1000 / 60;
 
 
 
-class MovingObject {
+class Object {
+  
   constructor(options) {
+    this.id = options.id || null;
+    this.type = options.type || null;
     this.pos = options.pos;
     this.vel = options.vel;
     this.radius = options.radius || 50;
@@ -43,4 +46,4 @@ class MovingObject {
 }
 
 
-module.exports = MovingObject;
+module.exports = Object;

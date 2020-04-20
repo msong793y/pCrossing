@@ -1,11 +1,16 @@
 const Util = require('./util');
-const MovingObject = require('./moving_object');
+const Bank = require('./banks')
+const Object = require('./object');
 
 class Game {
   constructor() {
     this.DIM_X = 1000;
     this.DIM_Y = 700;
     this.entities = [];
+    this.banks = [];
+    this.validBanks= new Set();
+    this.vendors = [];
+    this.validVendors = new Set();
     this.score = 0; // total score
     this.stage = 0; // current level
     this.setStage();
@@ -38,12 +43,25 @@ class Game {
 
   // setting for each level
   setStage() {
-    for (let i = 0; i < 10; i++) {
-      let pos = this.startingPosition();
-      let that = this;
-      this.entities.push(
-        new MovingObject({ pos: pos, vel: Util.randomVec(3), game: that })
-      );
+
+    let bankSet = new Set;
+    
+     for (let i = 1; i < 4; i++) {
+       let pos = [100, 100 * i];
+       let that = this;
+
+       this.entities.push(new Bank({ pos: pos, game: that, num: i }));
+     }
+    
+    if(this.stage === 0){
+
+        for (let i = 0; i < 10; i++) {
+        let pos = this.startingPosition();
+        let that = this;
+        this.entities.push(
+            new Object({ pos: pos, vel: Util.randomVec(3), game: that })
+        );
+        }
     }
   }
 
