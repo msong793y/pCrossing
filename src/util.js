@@ -28,6 +28,16 @@ const Util = {
     norm(vec) {
         return Util.dist([0, 0], vec);
     },
+
+    dirM(pos,vec) {
+        const norm = Util.normM(pos,vec);
+        return Util.scale(vec, 1 / norm);
+    },
+
+    // Find the length of the vector.
+    normM(pos,vec) {
+        return Util.dist(pos, vec);
+    },
 };
 
 

@@ -1,6 +1,7 @@
 const Util = require('./util');
 const Bank = require('./banks')
 const Object = require('./object');
+const Pla = require('./pla')
 
 class Game {
   constructor() {
@@ -13,6 +14,7 @@ class Game {
     this.validVendors = new Set();
     this.score = 0; // total score
     this.stage = 0; // current level
+    this.pla = new Pla({  game: this})
     this.setStage();
   }
 
@@ -45,6 +47,10 @@ class Game {
   setStage() {
 
     let bankSet = new Set;
+
+      //push Pla into entities
+
+      this.entities.push(this.pla)
     
      for (let i = 1; i < 4; i++) {
        let pos = [100, 100 * i];
@@ -59,7 +65,7 @@ class Game {
         let pos = this.startingPosition();
         let that = this;
         this.entities.push(
-            new Object({ pos: pos, vel: Util.randomVec(3), game: that })
+            // new Object({ pos: pos, vel: Util.randomVec(3), game: that })
         );
         }
     }

@@ -150,6 +150,7 @@ module.exports =Bank
 const Util = __webpack_require__(/*! ./util */ "./src/util.js");
 const Bank = __webpack_require__(/*! ./banks */ "./src/banks.js")
 const Object = __webpack_require__(/*! ./object */ "./src/object.js");
+const Pla = __webpack_require__(/*! ./pla */ "./src/pla.js")
 
 class Game {
   constructor() {
@@ -162,6 +163,7 @@ class Game {
     this.validVendors = new Set();
     this.score = 0; // total score
     this.stage = 0; // current level
+    this.pla = new Pla({  game: this})
     this.setStage();
   }
 
@@ -194,6 +196,10 @@ class Game {
   setStage() {
 
     let bankSet = new Set;
+
+      //push Pla into entities
+
+      this.entities.push(this.pla)
     
      for (let i = 1; i < 4; i++) {
        let pos = [100, 100 * i];
@@ -208,7 +214,7 @@ class Game {
         let pos = this.startingPosition();
         let that = this;
         this.entities.push(
-            new Object({ pos: pos, vel: Util.randomVec(3), game: that })
+            // new Object({ pos: pos, vel: Util.randomVec(3), game: that })
         );
         }
     }
@@ -241,11 +247,19 @@ class GameView{
         this.game = game;
         this.canvas = canvas;
         this.ctx = ctx;
+        this.pla = this.game.pla;
+        this.getPosition=this.getPosition.bind(this)
+
+
+
         this.start();
 
     }
 
     start(){
+
+        this.bindKeyHandlers();
+        this.clidkHandlers();
         this.lastTime= performance.now();
 
         requestAnimationFrame(this.animate.bind(this));
@@ -279,13 +293,62 @@ class GameView{
 
     // }
     };
+    //
+
+    clidkHandlers() {
+
+        const canvas = this.canvas
+
+        canvas.addEventListener("mousedown", this.getPosition, false);
+
+    };
+
+   
+
+    getPosition(event) {
+
+       
+
+        let x = event.x;
+        let y = event.y;
+
+        
+        
+        // x -= this.pla.pos[0];
+        // y -= this.pla.pos[1];
+        let vec = [x, y]
+
+        console.log(vec)
+        // this.pla.vel = [0, 0]
+        this.pla.mouseMove(vec)
+    }
 
 
 
+};
+
+
+GameView.MOVES = {
+    w: [0, -2],
+    a: [-2, 0],
+    s: [0, 2],
+    d: [2, 0],
+
+};
+
+GameView.prototype.bindKeyHandlers = function bindKeyHandlers() {
+    const pla = this.pla;
+
+    Object.keys(GameView.MOVES).forEach(function (k) {
+        const move = GameView.MOVES[k];
+        key(k, function () { pla.power(move); });
+    });
+
+
+};
 
 
 
-}
 
 
 module.exports = GameView
@@ -388,6 +451,80 @@ module.exports = Object;
 
 /***/ }),
 
+/***/ "./src/pla.js":
+/*!********************!*\
+  !*** ./src/pla.js ***!
+  \********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+const Object = __webpack_require__(/*! ./object */ "./src/object.js")
+const Util = __webpack_require__(/*! ./util.js */ "./src/util.js");
+
+class Pla extends Object{
+
+    constructor(options){
+
+        super(options)
+
+        this.radius = 40;
+        this.vel = [0, 0];
+        this.pos = [500,200]
+        this.type = "pla";
+        this.speed = 2;
+        this.color = "#9400D3";
+        // this.pos = options.pos;
+        this.game = options.game;
+        this.timeout = null;
+        
+    }
+
+
+    power(impulse) {
+
+
+        this.vel[0] = impulse[0];
+        this.vel[1] = impulse[1];
+        console.log(`pos ${this.pos}`)
+        console.log(this.vel)
+        let that = this;
+        clearTimeout(this.timeout)
+        // timeout = setTimeout(() => { console.log("hi")}, 500)
+
+        this.timeout = setTimeout(() => { that.vel[0] = 0; that.vel[1] = 0 }, 500)
+
+    };
+
+    mouseMove(newPos){
+        
+        // this.vel[0] = ((newPos[0] - this.pos[0])/1000)*this.speed*4
+        // this.vel[1] = ((newPos[1] - this.pos[1]) /700)*this.speed*4
+        let vec = []
+        vec[0] = newPos[0] - this.pos[0];
+        vec[1] = newPos[1] - this.pos[1];
+
+        clearTimeout(this.timeout)
+        const newVec = Util.dir(vec)
+        this.vel[0] = newVec[0]*4;
+        this.vel[1] = newVec[1]*4;
+        
+        let that = this;
+
+        this.timeout = setTimeout(() => { that.vel[0] = 0; that.vel[1] = 0 }, 800)
+
+        
+    }
+
+
+
+}
+
+
+module.exports = Pla;
+
+/***/ }),
+
 /***/ "./src/util.js":
 /*!*********************!*\
   !*** ./src/util.js ***!
@@ -424,6 +561,16 @@ const Util = {
     // Find the length of the vector.
     norm(vec) {
         return Util.dist([0, 0], vec);
+    },
+
+    dirM(pos,vec) {
+        const norm = Util.normM(pos,vec);
+        return Util.scale(vec, 1 / norm);
+    },
+
+    // Find the length of the vector.
+    normM(pos,vec) {
+        return Util.dist(pos, vec);
     },
 };
 

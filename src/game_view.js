@@ -5,11 +5,19 @@ class GameView{
         this.game = game;
         this.canvas = canvas;
         this.ctx = ctx;
+        this.pla = this.game.pla;
+        this.getPosition=this.getPosition.bind(this)
+
+
+
         this.start();
 
     }
 
     start(){
+
+        this.bindKeyHandlers();
+        this.clidkHandlers();
         this.lastTime= performance.now();
 
         requestAnimationFrame(this.animate.bind(this));
@@ -43,13 +51,62 @@ class GameView{
 
     // }
     };
+    //
+
+    clidkHandlers() {
+
+        const canvas = this.canvas
+
+        canvas.addEventListener("mousedown", this.getPosition, false);
+
+    };
+
+   
+
+    getPosition(event) {
+
+       
+
+        let x = event.x;
+        let y = event.y;
+
+        
+        
+        // x -= this.pla.pos[0];
+        // y -= this.pla.pos[1];
+        let vec = [x, y]
+
+        console.log(vec)
+        // this.pla.vel = [0, 0]
+        this.pla.mouseMove(vec)
+    }
 
 
 
+};
+
+
+GameView.MOVES = {
+    w: [0, -2],
+    a: [-2, 0],
+    s: [0, 2],
+    d: [2, 0],
+
+};
+
+GameView.prototype.bindKeyHandlers = function bindKeyHandlers() {
+    const pla = this.pla;
+
+    Object.keys(GameView.MOVES).forEach(function (k) {
+        const move = GameView.MOVES[k];
+        key(k, function () { pla.power(move); });
+    });
+
+
+};
 
 
 
-}
 
 
 module.exports = GameView
