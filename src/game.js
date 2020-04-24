@@ -65,7 +65,7 @@ class Game {
         let pos = this.startingPosition();
         let that = this;
         this.entities.push(
-            // new Object({ pos: pos, vel: Util.randomVec(3), game: that })
+            new Object({ pos: pos, vel: Util.randomVec(3), game: that })
         );
         }
     }

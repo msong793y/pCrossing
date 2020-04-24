@@ -140,6 +140,6 @@ button:disabled {
     margin-left: 3%;
     margin-right:3%;
     height: 70vh;
-    width: 90vw;
+    width: auto;
     background-color: black;
 }
